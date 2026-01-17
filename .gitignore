@@ -1,0 +1,11 @@
+# Bỏ qua file biên dịch
+/build/
+/dist/
+*.class
+
+# Bỏ qua file cấu hình riêng tư của NetBeans
+/nbproject/private/
+
+# Bỏ qua file tạm hệ thống
+Thumbs.db
+.DS_Store
