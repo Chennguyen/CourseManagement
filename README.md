@@ -1,12 +1,12 @@
 # Course Management System
 
-Hệ thống quản lý khóa học trực tuyến đơn giản, hiệu suất cao được xây dựng bằng **Java Servlet/JSP** và **SQL Server**. Hỗ trợ đồng bộ giỏ hàng, thanh toán và quản lý khóa học.
+A lightweight, high-performance online course management system built using **Java Servlet/JSP** and **SQL Server**. Features include persistent cart synchronization, secure checkout processing, and comprehensive course management.
 
-## ✨ Features (Tính năng)
+## ✨ Features
 
-* **User:** Tìm kiếm, Xem chi tiết, Giỏ hàng (Sync DB), Thanh toán, Feedback, Voucher.
-* **Admin:** Thêm, Xóa, Sửa khóa học (CRUD).
-* **System:** Phân quyền, Session management, Database transaction.
+* **User:** Course Search, View Details, Shopping Cart (Database Sync), Checkout, Feedback/Rating, Voucher Application.
+* **Admin:** Course Management (CRUD - Create, Read, Update, Delete).
+* **System:** Role-based Authorization, Session Management, Database Transactions.
 
 ## 🛠 Tech Stack
 
@@ -16,9 +16,9 @@ Hệ thống quản lý khóa học trực tuyến đơn giản, hiệu suất c
 * **Server:** Apache Tomcat 8.0 / 9.0
 * **IDE:** NetBeans 8.2
 
-## 🚀 Quick Start (Cài đặt)
+## 🚀 Quick Start
 
-### 1. Clone Project
+### 1. Clone the Repository
 ```bash
 git clone [https://github.com/YourName/CourseManagement.git](https://github.com/YourName/CourseManagement.git)
 cd CourseManagement
