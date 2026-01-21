@@ -1,94 +1,82 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author Lenovo
- */
 public class Cart {
-   private Map<String, CourseDTO> cart;
-    private int discountPercent = 0; // Mặc định chưa giảm
+    // SỬA LẠI: Dùng CartItem thay vì CourseDTO
+    private Map<String, CartItem> cart;
+    private int discountPercent = 0; 
 
     public Cart() {
     }
 
-    public Cart(Map<String, CourseDTO> cart) {
+    public Cart(Map<String, CartItem> cart) {
         this.cart = cart;
     }
 
-    public Map<String, CourseDTO> getCart() {
+    public Map<String, CartItem> getCart() {
         return cart;
     }
 
-    public void setCart(Map<String, CourseDTO> cart) {
+    public void setCart(Map<String, CartItem> cart) {
         this.cart = cart;
     }
-
-    // --- Getter Setter cho Discount ---
-    public int getDiscountPercent() {
-        return discountPercent;
-    }
-
-    public void setDiscountPercent(int discountPercent) {
-        this.discountPercent = discountPercent;
-    }
-
-    public boolean add(CourseDTO course) {
-        boolean check = false;
+    
+    // --- SỬA LẠI HÀM ADD: Nhận thêm int quantity ---
+    public boolean add(CourseDTO course, int quantity) {
         if (this.cart == null) {
             this.cart = new HashMap<>();
         }
+        
         if (this.cart.containsKey(course.getId())) {
-            // Khóa học online thường chỉ mua 1 lần
+            // Nếu đã có -> Cộng dồn số lượng
+            CartItem item = this.cart.get(course.getId());
+            item.setQuantity(item.getQuantity() + quantity);
         } else {
-            this.cart.put(course.getId(), course);
-            check = true;
+            // Nếu chưa có -> Tạo CartItem mới
+            this.cart.put(course.getId(), new CartItem(course, quantity));
         }
-        return check;
+        return true;
     }
 
     public boolean remove(String id) {
-        boolean check = false;
-        if (this.cart != null) {
-            if (this.cart.containsKey(id)) {
-                this.cart.remove(id);
-                // Nếu xóa sạch giỏ hàng thì reset mã giảm giá
-                if (this.cart.isEmpty()) {
-                    this.discountPercent = 0;
-                }
-                check = true;
-            }
+        if (this.cart != null && this.cart.containsKey(id)) {
+            this.cart.remove(id);
+            if (this.cart.isEmpty()) this.discountPercent = 0;
+            return true;
         }
-        return check;
+        return false;
     }
-    
-    // --- LOGIC TÍNH TIỀN ---
 
-    // 1. Tổng tiền gốc
-    public float getTotal() {
-        float total = 0;
+    // --- SỬA LẠI TÍNH TỔNG TIỀN ---
+    public float getFinalTotal() {
+        float subTotal = 0;
         if (this.cart != null) {
-            for (CourseDTO course : this.cart.values()) {
-                total += course.getFee();
+            for (CartItem item : this.cart.values()) {
+                subTotal += item.getTotal(); // Gọi hàm tính tiền của CartItem
             }
         }
-        return total;
+        return subTotal * (1 - (discountPercent / 100.0f));
     }
     
-    // 2. Tiền được giảm
-    public float getDiscountAmount() {
-        return getTotal() * discountPercent / 100;
-    }
+    public void updateQuantity(String id, int newQuantity) {
+    if (this.cart == null) return;
     
-    // 3. Tiền phải trả (Final) - Sẽ dùng để lưu xuống DB
-    public float getFinalTotal() {
-        return getTotal() - getDiscountAmount();
+    if (this.cart.containsKey(id)) {
+        if (newQuantity <= 0) {
+            // Nếu số lượng <= 0 thì xóa luôn khỏi giỏ
+            this.cart.remove(id);
+             if (this.cart.isEmpty()) this.discountPercent = 0;
+        } else {
+            // Ngược lại thì cập nhật số lượng mới
+            CartItem item = this.cart.get(id);
+            item.setQuantity(newQuantity);
+        }
     }
+}
+    
+    // Getter Setter Discount
+    public int getDiscountPercent() { return discountPercent; }
+    public void setDiscountPercent(int discountPercent) { this.discountPercent = discountPercent; }
 }

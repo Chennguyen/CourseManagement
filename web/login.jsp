@@ -13,8 +13,8 @@
         <style>
             /* 1. Cấu trúc trang */
             body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Font đẹp hơn */
-                background-color: #f0f2f5; /* Màu xám hiện đại của Facebook */
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f0f2f5;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -25,16 +25,16 @@
             /* 2. Khung đăng nhập */
             .login-container {
                 background-color: white;
-                padding: 40px; /* Tăng padding cho thoáng */
+                padding: 40px;
                 border-radius: 10px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Bóng đổ xịn hơn */
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
                 width: 320px;
             }
 
-            /* 3. Text Welcome mới thêm */
+            /* 3. Text Welcome */
             .welcome-title {
                 text-align: center;
-                color: #2E8B57; /* Màu xanh lá đậm sang trọng */
+                color: #2E8B57;
                 margin: 0 0 5px 0;
                 font-size: 28px;
             }
@@ -43,7 +43,7 @@
                 text-align: center;
                 color: #666;
                 font-size: 14px;
-                margin-bottom: 30px; /* Cách xa form ra một chút */
+                margin-bottom: 30px;
             }
 
             /* 4. Form inputs */
@@ -65,7 +65,7 @@
             }
 
             input[type="text"]:focus, input[type="password"]:focus {
-                border-color: #2E8B57; /* Focus vào đổi màu xanh */
+                border-color: #2E8B57;
                 outline: none;
             }
 
@@ -94,7 +94,7 @@
                 color: #888;
                 text-decoration: none;
                 cursor: pointer;
-                margin-top: 15px;
+                margin-top: 10px;
                 display: block;
                 width: 100%;
                 text-align: center;
@@ -105,6 +105,7 @@
                 text-decoration: underline;
             }
 
+            /* CSS cho thông báo Lỗi (Đỏ) */
             .error-msg {
                 color: #dc3545;
                 text-align: center;
@@ -115,12 +116,60 @@
                 font-size: 14px;
                 border: 1px solid #ffcccc;
             }
+
+            /* CSS cho thông báo Thành công (Xanh) - MỚI THÊM */
+            .success-msg {
+                color: #155724;
+                background-color: #d4edda;
+                border-color: #c3e6cb;
+                text-align: center;
+                margin-bottom: 20px;
+                padding: 10px;
+                border-radius: 5px;
+                font-size: 14px;
+                border: 1px solid #c3e6cb;
+            }
+            
+            /* CSS Link đăng ký - MỚI THÊM */
+            .register-link {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 14px;
+            }
+            .register-link a {
+                color: #2E8B57;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            .register-link a:hover {
+                text-decoration: underline;
+            }
         </style>
     </head>
     <body>
         <div class="login-container">
             <h1 class="welcome-title">Welcome Back! </h1>
             <p class="sub-title">Sign in to Course Management</p>
+
+            <%-- Code hứng MESSAGE từ RegisterController gửi về --%>
+            <%
+                String message = (String) request.getAttribute("MESSAGE");
+                if (message != null) {
+            %>
+                <div class="success-msg">✅ <%= message %></div>
+            <%
+                }
+            %>
+
+            <%-- Code hứng ERROR từ LoginController gửi về --%>
+            <%
+                String error = (String) request.getAttribute("ERROR");
+                if (error != null) {
+            %>
+                <div class="error-msg">⚠️ <%= error %></div>
+            <%
+                }
+            %>
 
             <form action="MainController" method="POST">
                 <label>User ID</label>
@@ -134,14 +183,10 @@
                 <button type="reset" class="btn-reset">Clear information</button>
             </form>
             
-            <%
-                String error = (String) request.getAttribute("ERROR");
-                if (error != null) {
-            %>
-                <div class="error-msg">⚠️ <%= error %></div>
-            <%
-                }
-            %>
+            <div class="register-link">
+                Don't have an account? <a href="register.jsp">Sign up here</a>
+            </div>
+            
         </div>
     </body>
 </html>

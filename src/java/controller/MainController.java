@@ -74,6 +74,9 @@ public class MainController extends HttpServlet {
     private static final String DISCOUNT = "Discount";
     private static final String DISCOUNT_CONTROLLER = "DiscountController";
 
+    private static final String UPDATE_CART = "UpdateCart";
+    private static final String UPDATE_CART_CONTROLLER = "UpdateCartController";
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -102,6 +105,8 @@ public class MainController extends HttpServlet {
                 url = ADD_TO_CART_CONTROLLER;
             } else if (VIEW_CART.equals(action)) {
                 url = VIEW_CART_CONTROLLER;
+            } else if (UPDATE_CART.equals(action)) { // Route cho nút + -
+                url = UPDATE_CART_CONTROLLER;
             } else if (REMOVE_FROM_CART.equals(action)) {
                 url = REMOVE_FROM_CART_CONTROLLER;
             } else if (VIEW_DETAIL.equals(action)) {

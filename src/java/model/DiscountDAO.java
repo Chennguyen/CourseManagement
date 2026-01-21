@@ -15,31 +15,27 @@ import utils.DBUtils;
  * @author Lenovo
  */
 public class DiscountDAO {
-    // Tìm mã giảm giá trong DB
-    public DiscountDTO getDiscount(String code) throws Exception {
+    public DiscountDTO getDiscount(String code) {
         DiscountDTO dto = null;
-        Connection conn = null;
-        PreparedStatement ptm = null;
-        ResultSet rs = null;
         try {
-            conn = DBUtils.getConnection();
+            Connection conn = DBUtils.getConnection();
             if (conn != null) {
-                String sql = "SELECT percentDiscount, expiryDate, quantity FROM tblDiscounts WHERE code=?";
-                ptm = conn.prepareStatement(sql);
+                // Sửa tên cột cho khớp DTO: code, percentDiscount...
+                String sql = "SELECT code, percentDiscount, expiryDate, quantity FROM tblDiscounts WHERE code=?";
+                PreparedStatement ptm = conn.prepareStatement(sql);
                 ptm.setString(1, code);
-                rs = ptm.executeQuery();
+                ResultSet rs = ptm.executeQuery();
                 if (rs.next()) {
-                    dto = new DiscountDTO(code, 
-                                          rs.getInt("percentDiscount"), 
-                                          rs.getDate("expiryDate"), 
-                                          rs.getInt("quantity"));
+                    dto = new DiscountDTO(
+                        rs.getString("code"),
+                        rs.getInt("percentDiscount"),
+                        rs.getDate("expiryDate"),
+                        rs.getInt("quantity")
+                    );
                 }
+                conn.close();
             }
-        } finally {
-            if (rs != null) rs.close();
-            if (ptm != null) ptm.close();
-            if (conn != null) conn.close();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
         return dto;
     }
 }

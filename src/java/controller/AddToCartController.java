@@ -22,6 +22,16 @@ public class AddToCartController extends HttpServlet {
         String url = SUCCESS;
         try {
             String courseID = request.getParameter("id");
+            
+            // Lấy số lượng từ input, mặc định là 1
+            int quantity = 1; 
+            try {
+                String qtyStr = request.getParameter("quantity");
+                if(qtyStr != null && !qtyStr.isEmpty()){
+                    quantity = Integer.parseInt(qtyStr);
+                }
+            } catch (Exception e) {}
+
             CourseDAO dao = new CourseDAO();
             CourseDTO course = dao.getCourseByID(courseID); 
             
@@ -33,24 +43,19 @@ public class AddToCartController extends HttpServlet {
                     cart = new Cart();
                 }
                 
-                // Logic cũ: Thêm vào Session
-                boolean check = cart.add(course); // cart.add trả về true nếu thêm mới, false nếu trùng
+                // Gọi hàm add mới sửa (có quantity)
+                cart.add(course, quantity); 
                 
-                if (check) { // Chỉ lưu DB nếu là món mới
-                    session.setAttribute("CART", cart);
-                    
-                    // --- MỚI THÊM: LƯU XUỐNG DB ---
-                    UserDTO user = (UserDTO) session.getAttribute("LOGIN_USER");
-                    if (user != null) {
-                        CartDAO cartDAO = new CartDAO();
-                        cartDAO.addToCart(user.getUserID(), courseID);
-                    }
-                    // ------------------------------
-                    
-                    session.setAttribute("MESSAGE", "Added " + course.getName() + " successfully!");
-                } else {
-                     session.setAttribute("MESSAGE", "Course already in cart!");
+                session.setAttribute("CART", cart);
+                
+                UserDTO user = (UserDTO) session.getAttribute("LOGIN_USER");
+                if (user != null) {
+                    CartDAO cartDAO = new CartDAO();
+                    // Gọi hàm addToCart mới sửa (có quantity)
+                    cartDAO.addToCart(user.getUserID(), courseID, quantity); 
                 }
+                
+                session.setAttribute("MESSAGE", "Added " + quantity + " x " + course.getName() + " successfully!");
                 
                 String lastSearch = request.getParameter("lastSearch");
                 if(lastSearch == null) lastSearch = "";
@@ -63,7 +68,6 @@ public class AddToCartController extends HttpServlet {
             response.sendRedirect(url);
         }
     }
-
     @Override protected void doGet(HttpServletRequest r, HttpServletResponse p) throws ServletException, IOException {processRequest(r,p);}
     @Override protected void doPost(HttpServletRequest r, HttpServletResponse p) throws ServletException, IOException {processRequest(r,p);}
 }
